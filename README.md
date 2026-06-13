@@ -1,81 +1,162 @@
-# OAuth2-server
+# OAuth2 Authorization Code Flow
 
-A demo web application that implements the **OAuth2 Authorization Code flow** using the [oauth2-mock-server](https://www.npmjs.com/package/oauth2-mock-server) npm package.
+A production-style OAuth2 demo built with Node.js and Express. The project implements the **Authorization Code flow** using a local mock identity provider, with a clean frontend, server-side token exchange, and automated test coverage.
 
-Built as a coding assessment for **Floos** — demonstrates API integration, OAuth2 concepts, and full-stack Node.js development.
+## Highlights
 
-## What this project does
+- OAuth2 mock server powered by [`oauth2-mock-server`](https://www.npmjs.com/package/oauth2-mock-server)
+- Express web client with secure backend token exchange
+- CSRF protection via OAuth `state` validation
+- User profile retrieval from `/userinfo`
+- Unit and integration tests using Node.js built-in test runner
+- Polished responsive UI
 
-1. Runs a **mock OAuth2 server** on `http://localhost:8080` (simulates an identity provider)
-2. Runs a **web application** on `http://localhost:3000` with a "Login with OAuth2" button
-3. Redirects the user through the standard Authorization Code flow
-4. Exchanges the authorization code for an access token
-5. Fetches mock user info from the `/userinfo` endpoint
+## Architecture
 
-## Project structure
-
+```text
+Browser                Web App (:3000)              OAuth Server (:8080)
+   |                          |                              |
+   |-- GET /login ----------->|                              |
+   |                          |-- redirect /authorize ------>|
+   |                          |                              |
+   |<------------------------- redirect /callback?code=... -|
+   |                          |-- POST /token -------------->|
+   |                          |<-- access_token -------------|
+   |                          |-- GET /userinfo ------------>|
+   |                          |<-- user profile -------------|
+   |<-- success page ---------|                              |
 ```
+
+## Project Structure
+
+```text
 OAuth2/
-├── package.json              # Dependencies and npm scripts
-├── README.md                 # This file
-├── OAUTH2-ASSESSMENT-GUIDE.md # Detailed study guide
 ├── src/
-│   ├── config.js             # Shared URLs and OAuth client settings
-│   ├── oauth-server.js       # Mock OAuth2 server (port 8080)
-│   └── app-server.js         # Web app + OAuth client logic (port 3000)
-└── public/
-    ├── index.html            # Login page with OAuth button
-    ├── app.js                # Frontend UX enhancements
-    └── style.css             # Shared styles
+│   ├── app-server.js       # Express app and OAuth routes
+│   ├── oauth-server.js     # Mock OAuth2 provider
+│   ├── oauth-client.js     # Authorize URL, token, and userinfo helpers
+│   ├── state.js            # OAuth state store (CSRF protection)
+│   ├── templates.js        # HTML render helpers
+│   └── config.js           # Shared OAuth configuration
+├── public/
+│   ├── index.html          # Login page
+│   ├── app.js              # Frontend interactions
+│   └── style.css           # UI styling
+├── tests/
+│   ├── unit/               # Fast unit tests (no servers required)
+│   └── integration/        # End-to-end flow tests
+├── package.json
+└── README.md
 ```
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 20.19 or later
-- npm (comes with Node.js)
+- Node.js 20.19+ (or 22.12+)
+- npm
 
-## Installation
+## Getting Started
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-## How to run
-
-You need **two terminal windows** — one for each server.
-
-**Terminal 1 — Start the OAuth2 mock server:**
+Start both services in separate terminals:
 
 ```bash
+# Terminal 1
 npm run start:oauth
-```
 
-**Terminal 2 — Start the web application:**
-
-```bash
+# Terminal 2
 npm run start:app
 ```
 
-**Open in browser:** [http://localhost:3000](http://localhost:3000)
+Open the application:
 
-Click **"Login with OAuth2"** and follow the flow.
-
-## OAuth2 flow (summary)
-
-```
-User → /login → OAuth /authorize → /callback?code=...
-     → POST /token → access_token → GET /userinfo → display results
+```text
+http://localhost:3000
 ```
 
-See [OAUTH2-ASSESSMENT-GUIDE.md](./OAUTH2-ASSESSMENT-GUIDE.md) for a full explanation of every step.
+Click **Login with OAuth2** to complete the flow.
 
-## Technologies used
+## OAuth Flow
 
-- **Node.js** — runtime
-- **Express** — web application server
-- **oauth2-mock-server** — mock OAuth2 / OpenID Connect provider
-- **Vanilla HTML/CSS/JS** — minimal frontend
+| Step | Endpoint | Description |
+|------|----------|-------------|
+| 1 | `GET /login` | Builds authorize URL and redirects the browser |
+| 2 | `GET /authorize` | Mock server issues an authorization code |
+| 3 | `GET /callback` | App receives `code` and validates `state` |
+| 4 | `POST /token` | App exchanges code for `access_token` |
+| 5 | `GET /userinfo` | App fetches authenticated user profile |
+
+## Testing
+
+### Unit tests
+
+Runs instantly without starting any servers:
+
+```bash
+npm test
+```
+
+Unit test files:
+
+- `tests/unit/config.test.js`
+- `tests/unit/state.test.js`
+- `tests/unit/oauth-client.test.js`
+- `tests/unit/templates.test.js`
+
+### Integration tests
+
+Requires both servers to be running:
+
+```bash
+npm run test:integration
+```
+
+Integration test file:
+
+- `tests/integration/oauth-flow.test.js`
+
+## API Routes
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/` | GET | Login page |
+| `/login` | GET | Starts OAuth authorization |
+| `/callback` | GET | Handles OAuth redirect and token exchange |
+
+## Configuration
+
+All OAuth settings are centralized in `src/config.js`:
+
+| Variable | Value |
+|----------|-------|
+| OAuth server | `http://localhost:8080` |
+| Web app | `http://localhost:3000` |
+| Client ID | `floos-demo-client` |
+| Redirect URI | `http://localhost:3000/callback` |
+| Scopes | `openid profile email` |
+
+## Tech Stack
+
+- Node.js (ES Modules)
+- Express
+- oauth2-mock-server
+- Vanilla HTML / CSS / JavaScript
+- Node.js test runner (`node:test`)
+
+## Security Notes
+
+This repository is intentionally built for local demonstration. In production:
+
+- Enforce HTTPS
+- Store secrets securely
+- Use httpOnly cookies for session handling
+- Validate OAuth state on every callback
+- Avoid exposing tokens in the browser
 
 ## Author
 
-Assessment project for Floos Software Engineer role.
+Built as a technical assessment demonstrating OAuth2 integration, API connectivity, and full-stack Node.js development.

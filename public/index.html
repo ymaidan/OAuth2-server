@@ -3,57 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OAuth2 Demo — Floos Assessment</title>
-  <!-- Shared styles for login and callback pages -->
+  <title>OAuth2 Demo</title>
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <main class="container">
     <header class="header">
-      <h1>OAuth2 Demo</h1>
-      <p class="subtitle">Authorization Code flow with oauth2-mock-server</p>
+      <p class="eyebrow">OAuth2 Authorization Code Flow</p>
+      <h1>Secure Sign-In Demo</h1>
+      <p class="subtitle">Authenticate through a mock OAuth2 provider</p>
     </header>
 
-    <!--
-      Login card — shown before authentication.
-      The button links to /login on our Express server, NOT directly to OAuth.
-      Our backend builds the correct authorize URL with state, client_id, etc.
-    -->
     <section class="card login-card">
-      <div class="icon">🔐</div>
+      <div class="icon" aria-hidden="true">&#128274;</div>
       <h2>Welcome</h2>
-      <p>
-        Click below to sign in using the mock OAuth2 server running on
-        <code>localhost:8080</code>.
-      </p>
-
-      <!--
-        href="/login" triggers server-side redirect to OAuth /authorize.
-        We use a link styled as a button so it works without JavaScript.
-      -->
+      <p>Sign in with the local OAuth2 mock server to complete the authorization flow.</p>
       <a href="/login" class="btn btn-primary" id="login-btn">Login with OAuth2</a>
     </section>
 
-    <!--
-      Flow explanation — helps reviewers understand what will happen.
-      This is educational UI for the assessment, not required by the spec.
-    -->
     <section class="card flow-card">
-      <h2>What happens when you click Login?</h2>
+      <h2>Authentication Flow</h2>
       <ol class="flow-steps">
-        <li>Browser redirects to <code>/login</code> on this app</li>
-        <li>App redirects you to OAuth <code>/authorize</code></li>
-        <li>Mock server auto-approves and redirects to <code>/callback?code=...</code></li>
-        <li>App exchanges the code for an <code>access_token</code></li>
-        <li>App calls <code>/userinfo</code> and displays the results</li>
+        <li>Redirect to <code>/login</code></li>
+        <li>Authorize at <code>/authorize</code></li>
+        <li>Return to <code>/callback</code> with a code</li>
+        <li>Exchange code for an access token</li>
+        <li>Fetch user profile from <code>/userinfo</code></li>
       </ol>
     </section>
 
-    <!-- Status message area — app.js can update this if needed -->
     <p id="status-message" class="status-message" hidden></p>
   </main>
 
-  <!-- Client-side enhancements (optional UX feedback on button click) -->
   <script src="/app.js"></script>
 </body>
 </html>
