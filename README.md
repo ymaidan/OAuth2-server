@@ -1,6 +1,6 @@
 # OAuth2 Authorization Code Flow
 
-A production-style OAuth2 demo built with Node.js and Express. The project implements the **Authorization Code flow** using a local mock identity provider, with a clean frontend, server-side token exchange, and automated test coverage.
+A production-style OAuth2 demo built with Node.js and Express for the **Flooss** technical assessment. The project implements the **Authorization Code flow** using a local mock identity provider, with a Flooss-branded frontend, server-side token exchange, and automated test coverage.
 
 ## Highlights
 
@@ -159,4 +159,4 @@ This repository is intentionally built for local demonstration. In production:
 
 ## Author
 
-Built as a technical assessment demonstrating OAuth2 integration, API connectivity, and full-stack Node.js development.
+Yousif Yasser Maidan
