@@ -1,0 +1,206 @@
+/**
+ * Shared styles for the OAuth2 demo application.
+ * Used by index.html (login) and callback pages rendered by app-server.js.
+ */
+
+/* CSS variables — easy to tweak colors in one place */
+:root {
+  --bg: #0f1419;
+  --surface: #1a2332;
+  --surface-hover: #243044;
+  --border: #2d3a4f;
+  --text: #e7ecf3;
+  --text-muted: #8b9cb3;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --success: #22c55e;
+  --error: #ef4444;
+  --code-bg: #0d1117;
+  --radius: 12px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* Card component — used for login box, flow steps, and results */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.card p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.hint {
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Login card — centered content */
+.login-card {
+  text-align: center;
+  padding: 2rem;
+}
+
+.login-card .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.login-card code {
+  background: var(--code-bg);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+/* Flow explanation list */
+.flow-steps {
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+}
+
+.flow-steps li {
+  margin-bottom: 0.5rem;
+}
+
+.flow-steps code {
+  background: var(--code-bg);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--surface-hover);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.btn.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+/* Code / token display blocks */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #a5d6ff;
+}
+
+/* Success and error card accents */
+.success-card {
+  border-left: 4px solid var(--success);
+}
+
+.error-card {
+  border-left: 4px solid var(--error);
+}
+
+.error-card h2 {
+  color: var(--error);
+}
+
+/* Status message from app.js */
+.status-message {
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.status-message.info {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}

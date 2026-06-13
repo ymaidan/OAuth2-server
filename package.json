@@ -1,0 +1,24 @@
+{
+  "name": "oauth2-server-demo",
+  "version": "1.0.0",
+  "description": "OAuth2 Authorization Code flow demo using oauth2-mock-server",
+  "type": "module",
+  "scripts": {
+    "start:oauth": "node src/oauth-server.js",
+    "start:app": "node src/app-server.js",
+    "start": "node src/oauth-server.js"
+  },
+  "keywords": [
+    "oauth2",
+    "oauth2-mock-server",
+    "authorization-code"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "oauth2-mock-server": "^8.2.3"
+  }
+}
