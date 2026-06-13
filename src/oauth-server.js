@@ -77,6 +77,15 @@ async function startOAuthServer() {
 }
 
 startOAuthServer().catch((error) => {
-  console.error('Failed to start OAuth2 mock server:', error);
+  if (error.code === 'EADDRINUSE') {
+    console.error(`\nPort ${OAUTH_PORT} is already in use.`);
+    console.error('Another OAuth server may still be running from a previous session.');
+    console.error('\nTo fix on Windows, run:');
+    console.error(`  netstat -ano | findstr :${OAUTH_PORT}`);
+    console.error('  taskkill /PID <PID> /F');
+    console.error('\nOr close the other terminal where npm run start:oauth is running.\n');
+  } else {
+    console.error('Failed to start OAuth2 mock server:', error);
+  }
   process.exit(1);
 });

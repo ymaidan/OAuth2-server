@@ -6,6 +6,7 @@
   "scripts": {
     "start:oauth": "node src/oauth-server.js",
     "start:app": "node src/app-server.js",
+    "test": "node test-requirements.js",
     "start": "node src/oauth-server.js"
   },
   "keywords": [
