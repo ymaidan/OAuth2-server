@@ -6,6 +6,7 @@
   "scripts": {
     "start:oauth": "node src/oauth-server.js",
     "start:app": "node src/app-server.js",
+    "db:reset": "node scripts/reset-db.js",
     "test": "node --test tests/unit/*.test.js",
     "test:integration": "node --test tests/integration/*.test.js"
   },
@@ -18,9 +19,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "express": "^5.1.0"
-  },
-  "devDependencies": {
+    "better-sqlite3": "^12.10.1",
+    "express": "^5.1.0",
     "oauth2-mock-server": "^8.2.3"
-  }
+  },
+  "devDependencies": {}
 }

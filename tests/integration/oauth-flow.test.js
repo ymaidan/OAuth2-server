@@ -26,7 +26,7 @@ test('integration: oauth and app servers are reachable', async (t) => {
   assert.ok(appUp);
 });
 
-test('integration: login redirects to authorize endpoint', async (t) => {
+test('integration: login page is shown before OAuth redirect', async (t) => {
   const appUp = await isServerUp(`${APP}/`);
   if (!appUp) {
     t.skip('Start app server with npm run start:app');
@@ -34,6 +34,30 @@ test('integration: login redirects to authorize endpoint', async (t) => {
   }
 
   const res = await fetch(`${APP}/login`, { redirect: 'manual' });
+  const html = await res.text();
+
+  assert.equal(res.status, 200);
+  assert.match(html, /Sign in/);
+  assert.match(html, /ahmed_demo/);
+});
+
+test('integration: database login redirects to authorize endpoint', async (t) => {
+  const appUp = await isServerUp(`${APP}/`);
+  if (!appUp) {
+    t.skip('Start app server with npm run start:app');
+    return;
+  }
+
+  const res = await fetch(`${APP}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      username: 'ahmed_demo',
+      password: 'demo1234',
+    }),
+    redirect: 'manual',
+  });
+
   const location = res.headers.get('location') || '';
   const parsed = new URL(location);
 
@@ -52,7 +76,15 @@ test('integration: full OAuth flow returns token and user info', async (t) => {
     return;
   }
 
-  const res = await fetch(`${APP}/login`, { redirect: 'follow' });
+  const res = await fetch(`${APP}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      username: 'ahmed_demo',
+      password: 'demo1234',
+    }),
+    redirect: 'follow',
+  });
   const html = await res.text();
 
   assert.match(html, /Login Successful/);

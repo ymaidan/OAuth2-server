@@ -195,6 +195,64 @@ body {
   font-size: 0.82rem;
 }
 
+.login-form {
+  display: grid;
+  gap: 1rem;
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--flooss-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font: inherit;
+  color: var(--text);
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--flooss-orange);
+}
+
+.login-error {
+  margin-bottom: 0.5rem !important;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.user-table th,
+.user-table td {
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.user-table th {
+  color: var(--flooss-navy);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 .flow-steps {
   padding-left: 1.25rem;
   color: var(--text-muted);

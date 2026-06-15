@@ -9,3 +9,5 @@ export const APP_BASE_URL = `http://${APP_HOST}:${APP_PORT}`;
 export const CLIENT_ID = 'floos-demo-client';
 export const REDIRECT_URI = `${APP_BASE_URL}/callback`;
 export const SCOPES = 'openid profile email';
+
+export const DB_PATH = process.env.OAUTH_TEST_DB || 'data/oauth.db';

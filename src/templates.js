@@ -105,6 +105,72 @@ export function renderSuccessPage({ code, tokens, userInfo }) {
   });
 }
 
+export function renderLoginPage({ error, users = [] }) {
+  const userRows = users
+    .map(
+      (user) =>
+        `<tr>
+          <td><code>${escapeHtml(user.username)}</code></td>
+          <td>${escapeHtml(user.email)}</td>
+          <td>${escapeHtml(user.role)}</td>
+        </tr>`
+    )
+    .join('');
+
+  const body = `
+    <section class="card login-card">
+      <h2>Sign in</h2>
+      <p>Use a demo account from the SQLite database.</p>
+
+      ${
+        error
+          ? `<p class="status-message info login-error">${escapeHtml(error)}</p>`
+          : ''
+      }
+
+      <form class="login-form" method="POST" action="/login">
+        <label class="field">
+          <span>Username or email</span>
+          <input type="text" name="username" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit" class="btn btn-primary">Login with OAuth2</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Demo users in database</h2>
+      <p class="hint">Password for Ahmed and Sara: <code>demo1234</code> · Admin: <code>admin1234</code></p>
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${userRows}
+        </tbody>
+      </table>
+    </section>
+
+    <div class="actions">
+      <a href="/" class="btn btn-secondary">Home</a>
+    </div>`;
+
+  return pageShell({
+    title: 'Sign In — FLOOSS',
+    eyebrow: 'OAuth2',
+    heading: 'Database Login',
+    subtitle: 'Authenticate with a user stored in SQLite',
+    body,
+  });
+}
+
 export function renderErrorPage(error, description) {
   const body = `
     <section class="card error-card">

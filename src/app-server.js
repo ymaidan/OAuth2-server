@@ -9,30 +9,65 @@ import {
   REDIRECT_URI,
   SCOPES,
 } from './config.js';
+import { initDatabase } from './db.js';
 import {
   buildAuthorizeUrl,
   exchangeCodeForTokens,
   fetchUserInfo,
 } from './oauth-client.js';
+import { saveLoginSession, cleanupOAuthSessions } from './oauth-sessions.js';
 import { StateStore } from './state.js';
-import { renderErrorPage, renderSuccessPage } from './templates.js';
+import {
+  renderErrorPage,
+  renderLoginPage,
+  renderSuccessPage,
+} from './templates.js';
+import { authenticateUser, listUsers } from './users.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+initDatabase();
+
 const app = express();
 const stateStore = new StateStore();
 
-setInterval(() => stateStore.cleanup(), 60 * 1000);
-
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
+
+setInterval(() => {
+  stateStore.cleanup();
+  cleanupOAuthSessions();
+}, 60 * 1000);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.get('/login', (req, res) => {
+  const error = req.query.error ? String(req.query.error) : null;
+  res.send(renderLoginPage({ error, users: listUsers() }));
+});
+
+app.post('/login', (req, res) => {
+  const username = String(req.body.username || '').trim();
+  const password = String(req.body.password || '');
+
+  const user = authenticateUser(username, password);
+  if (!user) {
+    return res
+      .status(401)
+      .send(
+        renderLoginPage({
+          error: 'Invalid username or password.',
+          users: listUsers(),
+        })
+      );
+  }
+
   const state = stateStore.create();
+  saveLoginSession(state, user.id);
+
   const authUrl = buildAuthorizeUrl({
     oauthBaseUrl: OAUTH_BASE_URL,
     clientId: CLIENT_ID,
@@ -40,6 +75,7 @@ app.get('/login', (req, res) => {
     scopes: SCOPES,
     state,
   });
+
   res.redirect(authUrl);
 });
 
