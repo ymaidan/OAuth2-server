@@ -7,7 +7,7 @@ export function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function pageShell({ title, eyebrow, heading, subtitle, body }) {
+function pageShell({ title, eyebrow, heading, subtitle, body, scripts = '' }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,8 +28,27 @@ function pageShell({ title, eyebrow, heading, subtitle, body }) {
     </header>
     ${body}
   </main>
+  ${scripts}
 </body>
 </html>`;
+}
+
+function collapsibleSection({ id, title, hint, content, hiddenByDefault = false }) {
+  return `<section class="card ${id === 'oauth-code' ? 'success-card' : ''}" id="${id}">
+      <div class="section-header">
+        <h2>${escapeHtml(title)}</h2>
+        <button
+          type="button"
+          class="btn-toggle"
+          data-toggle="${id}-content"
+          aria-expanded="${hiddenByDefault ? 'false' : 'true'}"
+        >${hiddenByDefault ? 'Show' : 'Hide'}</button>
+      </div>
+      <div class="section-content" id="${id}-content"${hiddenByDefault ? ' hidden' : ''}>
+        <p class="hint">${escapeHtml(hint)}</p>
+        ${content}
+      </div>
+    </section>`;
 }
 
 export function renderSuccessPage({ code, tokens, userInfo }) {
@@ -37,25 +56,37 @@ export function renderSuccessPage({ code, tokens, userInfo }) {
   const userJson = userInfo ? escapeHtml(JSON.stringify(userInfo, null, 2)) : null;
 
   const body = `
-    <section class="card success-card">
-      <h2>Authorization Code</h2>
-      <p class="hint">Single-use code returned by the OAuth server.</p>
-      <pre class="code-block">${escapeHtml(code)}</pre>
+    <section class="card toggle-card">
+      <p class="hint">Use the buttons below to show or hide OAuth response data.</p>
+      <div class="toggle-bar">
+        <button type="button" class="btn btn-primary" id="toggle-all-btn">
+          Hide technical details
+        </button>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>Access Token</h2>
-      <p class="hint">Token response from POST /token.</p>
-      <pre class="code-block">${tokenJson}</pre>
-    </section>
+    ${collapsibleSection({
+      id: 'oauth-code',
+      title: 'Authorization Code',
+      hint: 'Single-use code returned by the OAuth server.',
+      content: `<pre class="code-block">${escapeHtml(code)}</pre>`,
+    })}
+
+    ${collapsibleSection({
+      id: 'oauth-token',
+      title: 'Access Token',
+      hint: 'Token response from POST /token.',
+      content: `<pre class="code-block">${tokenJson}</pre>`,
+    })}
 
     ${
       userJson
-        ? `<section class="card">
-      <h2>User Profile</h2>
-      <p class="hint">Profile data from GET /userinfo.</p>
-      <pre class="code-block">${userJson}</pre>
-    </section>`
+        ? collapsibleSection({
+            id: 'oauth-profile',
+            title: 'User Profile',
+            hint: 'Profile data from GET /userinfo.',
+            content: `<pre class="code-block">${userJson}</pre>`,
+          })
         : ''
     }
 
@@ -70,6 +101,7 @@ export function renderSuccessPage({ code, tokens, userInfo }) {
     heading: 'Login Successful',
     subtitle: 'Authorization Code flow completed',
     body,
+    scripts: '<script src="/success-page.js"></script>',
   });
 }
 
